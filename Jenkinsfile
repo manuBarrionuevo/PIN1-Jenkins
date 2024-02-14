@@ -33,12 +33,11 @@ pipeline {
             env.VERSION = version
 
             echo 'Intentando login en Docker Hub'
-            // Docker login
-            if (!pinVarsInstance.dockerLogin('https://registry.example.com', 'dockerHub')) {
-              error 'Error en el login de Docker Hub'
-            }
-            pinVarsInstance.buildDockerImage("${DOCKER_USER}/AppPin1")
-          } catch (Exception e) {
+              // Docker login
+              if (pinVarsInstance.dockerLogin('https://registry.example.com')) {
+              pinVarsInstance.buildDockerImage("${DOCKER_USER}/AppPin", "${version}", '.')
+              }
+                    } catch (Exception e) {
             echo "Error en la etapa de Build: ${e.message}"
             currentBuild.result = 'FAILURE'
             error 'Hubo un error durante la etapa de Build.'
