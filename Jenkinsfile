@@ -76,6 +76,6 @@ buildDockerImage = { imageName, version, directory ->
   }
 }
 
-def fileExists(filePath) {
-    return file(filePath).exists()
+if (!file(PACKAGE_JSON).exists()) {
+    error 'No se encontró el archivo package.json'
 }
