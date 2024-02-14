@@ -75,3 +75,7 @@ buildDockerImage = { imageName, version, directory ->
             """
   }
 }
+
+def fileExists(filePath) {
+    return file(filePath).exists()
+}
