@@ -1,6 +1,7 @@
 @Library('pinVars') _ //se invoca libreria
 
 def pinVarsInstance = pinVars() //se crea instancia para poder utilizar las funciones
+def directory = '.'
 
 pipeline {
   agent any
@@ -12,7 +13,7 @@ pipeline {
   environment {
     VERSION_FILE = 'package.json'
     DOCKER_USER = sh(script: 'echo $DOCKER_USER', returnStdout: true).trim()
-    def directory = '.'
+    
   }
 
   stages {
