@@ -31,6 +31,15 @@ pipeline {
 
             env.VERSION = version
 
+            def versionResult = sh(script: "jq -r '.version' ${VERSION_FILE}", returnStdout: true)
+            echo "Resultado de jq: ${versionResult}"
+
+            def version = versionResult.trim()
+
+            if (!version) {
+              error 'No se encontró la versión en el package.json.'
+            }
+
             echo 'Intentando login en Docker Hub'
             // Docker login
             if (!pinVarsInstance.dockerLogin('https://registry.example.com', credentialsId: 'DockerHub')) {
