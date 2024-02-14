@@ -33,10 +33,10 @@ pipeline {
 
             echo 'Intentando login en Docker Hub'
             // Docker login
-            if (pinVarsInstance.dockerLogin('https://registry.example.com')) {
-              pinVarsInstance.buildDockerImage("${DOCKER_USER}/AppPin1", "${version}", '.')
+            if (!pinVarsInstance.dockerLogin('https://registry.example.com')) {
+              error 'Error en el login de Docker Hub'
             }
-            error "Error en el login de Docker Hub"
+            pinVarsInstance.buildDockerImage("${DOCKER_USER}/AppPin1", "${version}", '.')
           } catch (Exception e) {
             echo "Error en la etapa de Build: ${e.message}"
             currentBuild.result = 'FAILURE'
