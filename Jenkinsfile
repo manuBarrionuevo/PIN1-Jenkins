@@ -20,14 +20,16 @@ pipeline {
         script {
           try {
             echo "Buscando el patrón ${VERSION_PATTERN} en ${VERSION_FILE}"
-            def versionLine = sh(script: "grep -E ${VERSION_PATTERN} ${VERSION_FILE} | head -n 1", returnStdout: true).trim()
+
+            // Cambios aquí: se agregan comillas dobles alrededor del patrón
+            def versionLine = sh(script: "grep -E \"${VERSION_PATTERN}\" ${VERSION_FILE} | head -n 1", returnStdout: true).trim()
 
             if (!versionLine) {
               error 'No se encontró la versión en el package.json.'
             }
 
-            // Definir versión
-            def version = sh(script: "echo ${versionLine} | grep -oE '\\d+\\.\\d+\\.\\d+'", returnStdout: true).trim()
+            // Cambios aquí: se agregan comillas dobles alrededor del patrón
+            def version = sh(script: "echo \"${versionLine}\" | grep -oE '\\d+\\.\\d+\\.\\d+'", returnStdout: true).trim()
             echo "Versión encontrada en el package.json: ${version}"
 
             env.VERSION = version
@@ -51,13 +53,13 @@ pipeline {
     //   }
     // }
 
-    // stage('Deploy Image') {
-    //   steps {
-    //     sh '''
-    //       docker tag testapp 127.0.0.1:5000/mguazzardo/testapp
-    //       docker push 127.0.0.1:5000/mguazzardo/testapp
-    //     '''
-    //   }
-    // }
+  // stage('Deploy Image') {
+  //   steps {
+  //     sh '''
+  //       docker tag testapp 127.0.0.1:5000/mguazzardo/testapp
+  //       docker push 127.0.0.1:5000/mguazzardo/testapp
+  //     '''
+  //   }
+  // }
   }
 }
