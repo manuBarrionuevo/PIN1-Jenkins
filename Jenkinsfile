@@ -1,3 +1,4 @@
+def funcs = load 'funcs.groovy'
 pipeline {
   agent any
 
@@ -9,35 +10,35 @@ pipeline {
     VERSION_PATTERN = 'version: "[0-9]*\\.[0-9]*\\.[0-9]*"'
     PACKAGE_JSON = 'package.json'
   }
-  
+
   stages {
         stage('Build') {
       steps {
         script {
           try {
-             // Chequeo si el archivo package.json existe
-            if (!fileExists(PACKAGE_JSON)) {
+            // Chequeo si el archivo package.json existe
+            if (!funcs.fileExists(env.PACKAGE_JSON)) {
               error 'No se encontró el archivo package.json'
             }
 
             // Leer la versión directamente desde package.json usando jq
-            def version = sh(script: "jq -r .version ${PACKAGE_JSON}", returnStdout: true).trim()
+            def version = sh(script: "jq -r .version ${env.PACKAGE_JSON}", returnStdout: true).trim()
             echo "Versión encontrada en el package.json: ${version}"
 
             env.VERSION = version
 
             // Docker login
-            if (dockerLogin('https://registry.example.com')) {
-              buildDockerImage("${DOCKER_USER}/AppPIN1", "${version}", '.')
+            if (funcs.dockerLogin('https://registry.example.com')) {
+              funcs.buildDockerImage("${DOCKER_USER}/AppPIN1", "${version}", '.')
             }
-                    } catch (Exception e) {
+          } catch (Exception e) {
             echo "Error en la etapa de Build: ${e.message}"
             currentBuild.result = 'FAILURE'
             error 'Hubo un error durante la etapa de Build.'
           }
         }
       }
-        } // fin stage build
+    } //fin stage build
 
   //     stage('Run tests') {
   //       steps {
@@ -59,22 +60,3 @@ pipeline {
   //     }
   }
 }
-
-def dockerLogin = { registryUrl ->
-  withCredentials([usernamePassword(credentialsId: 'dockerHub', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASSWORD')]) {
-    withDockerRegistry([url: registryUrl]) {
-      return true
-    }
-  }
-  return false
-}
-
-def buildDockerImage = { imageName, version, directory ->
-  dir(directory) {
-    sh """
-                docker build -t $imageName:$version .
-            """
-  }
-}
-
-
