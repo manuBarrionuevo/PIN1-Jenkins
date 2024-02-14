@@ -15,7 +15,7 @@ pipeline {
   stages {
     stage('Load Functions') {
       steps {
-        node {
+        node('any') {
           // Agrega un bloque node para proporcionar el contexto necesario
           script {
             funcs = load 'funcs.groovy'
@@ -40,7 +40,7 @@ pipeline {
             env.VERSION = version
 
             // Docker login
-            node { // Inicio del bloque node
+            node('any') { // Inicio del bloque node
               if (funcs.dockerLogin('https://registry.example.com')) {
                 funcs.buildDockerImage("${DOCKER_USER}/AppPIN1", "${version}", '.')
               }
