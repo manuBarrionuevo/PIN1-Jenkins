@@ -1,50 +1,43 @@
-def funcs
+@Library('pinVars') _
+
+def pinVarsInstance = pinVars()
 
 pipeline {
   agent any
 
   options {
-    timeout(time: 10, unit: 'MINUTES')
+    timeout(time: 2, unit: 'MINUTES')
   }
 
   environment {
-    VERSION_PATTERN = 'version: "[0-9]*\\.[0-9]*\\.[0-9]*"'
-    PACKAGE_JSON = 'package.json'
+    VERSION_PATTERN = 'version:\\[[0-9]*\\.[0-9]*\\.[0-9]*\\]'
+    VERSION_FILE = 'package.json'
   }
 
   stages {
-    stage('Load Functions') {
-      steps {
-        node('') {
-          // Agrega un bloque node para proporcionar el contexto necesario
-          script {
-            funcs = load 'funcs.groovy'
-          }
-        }
-      }
-    }
-
-    stage('Build') {
+    stage('Building image') {
       steps {
         script {
           try {
-            // Chequeo si el archivo package.json existe
-            if (!funcs.fileExists(env.PACKAGE_JSON)) {
-              error 'No se encontró el archivo package.json'
+            pinVarsInstance.validateDirectories([CHANGELOG_FILE, 'app/result', 'app/vote', 'app/worker'])
+
+            // Chequeo si la versión existe en changelog
+            def versionLine = sh(script: "grep -E \"${VERSION_PATTERN}\" \"${CHANGELOG_FILE}\" | head -n 1", returnStdout: true).trim()
+
+            if (!versionLine) {
+              error 'No se encontró la versión en el changelog.'
             }
 
-            // Leer la versión directamente desde package.json usando jq
-            def version = sh(script: "jq -r .version ${env.PACKAGE_JSON}", returnStdout: true).trim()
-            echo "Versión encontrada en el package.json: ${version}"
+            // Definir versión
+            def version = sh(script: "echo \"${versionLine}\" | grep -oE \"[0-9]*\\.[0-9]*\\.[0-9]*\"", returnStdout: true).trim()
+            echo "Versión encontrada en el changelog: ${version}"
 
             env.VERSION = version
 
             // Docker login
-            node('any') { // Inicio del bloque node
-              if (funcs.dockerLogin('https://registry.example.com')) {
-                funcs.buildDockerImage("${DOCKER_USER}/AppPIN1", "${version}", '.')
-              }
-            } // Fin del bloque node
+            if (pinVarsInstance.dockerLogin('https://registry.example.com')) {
+              pinVarsInstance.buildDockerImage("${DOCKER_USER}/AppPin1", "${version}", '.')
+            }
           } catch (Exception e) {
             echo "Error en la etapa de Build: ${e.message}"
             currentBuild.result = 'FAILURE'
@@ -52,24 +45,20 @@ pipeline {
           }
         }
       }
-    } // fin stage build
+    }
 
     // stage('Run tests') {
     //   steps {
-    //     sh 'docker run testapp npm test'
+    //     sh "docker run testapp npm test"
     //   }
     // }
+
     // stage('Deploy Image') {
     //   steps {
     //     sh '''
-    //     docker tag testapp 127.0.0.1:5000/mguazzardo/testapp
-    //     docker push 127.0.0.1:5000/mguazzardo/testapp
+    //       docker tag testapp 127.0.0.1:5000/mguazzardo/testapp
+    //       docker push 127.0.0.1:5000/mguazzardo/testapp
     //     '''
-    //   }
-    // }
-    // stage('Vulnerability Scan - Docker ') {
-    //   steps {
-    //     sh 'docker run  -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy image --severity=critical 127.0.0.1:5000/mguazzardo/testapp'
     //   }
     // }
   }
