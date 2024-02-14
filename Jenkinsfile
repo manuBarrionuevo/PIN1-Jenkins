@@ -1,4 +1,4 @@
-@Library('pinVars') _package.json
+@Library('pinVars') _
 
 def pinVarsInstance = pinVars()
 
