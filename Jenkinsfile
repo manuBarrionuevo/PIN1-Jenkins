@@ -6,7 +6,7 @@ pipeline {
   }
 
   environment {
-    VERSION_PATTERN = '## \\[[0-9]*\\.[0-9]*\\.[0-9]*\\]'
+    VERSION_PATTERN = 'version: \\[[0-9]*\\.[0-9]*\\.[0-9]*\\]'
     PACKAGE_JSON = 'package.json'
   }
   stages {
@@ -16,6 +16,8 @@ pipeline {
           try {
             // Chequeo si la versión existe en package.json
             def versionLine = sh(script: "grep -E \"${VERSION_PATTERN}\" \"${PACKAGE_JSON}\" | head -n 1", returnStdout: true).trim()
+
+            echo "Línea correspondiente al patrón: ${versionLine}"
 
             if (!versionLine) {
               error 'No se encontró la versión en el changelog.'
