@@ -1,6 +1,6 @@
-@Library('pinVars') _
+@Library('pinVars') _ //se invoca libreria
 
-def pinVarsInstance = pinVars()
+def pinVarsInstance = pinVars() //se crea instancia para poder utilizar las funciones
 
 pipeline {
   agent any
@@ -20,7 +20,7 @@ pipeline {
           try {
             echo "Extrayendo la versión de ${VERSION_FILE}"
 
-            // Cambios aquí: utilizamos jq para extraer la versión
+            // utilizamos jq para extraer la versión
             def version = sh(script: "jq -r '.version' ${VERSION_FILE}", returnStdout: true).trim()
 
             if (!version) {
@@ -34,6 +34,7 @@ pipeline {
             // Docker login
             if (pinVarsInstance.dockerLogin('https://registry.example.com')) {
               pinVarsInstance.buildDockerImage("${DOCKER_USER}/AppPin1", "${version}", '.')
+              sh "docker images"
             }
           } catch (Exception e) {
             echo "Error en la etapa de Build: ${e.message}"
