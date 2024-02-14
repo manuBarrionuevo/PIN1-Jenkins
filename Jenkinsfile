@@ -14,33 +14,33 @@ pipeline {
   stages {
         stage('Build') {
       steps {
-        node { // Agrega el bloque node aquí
-          script {
-            try {
-              // Chequeo si el archivo package.json existe
-              if (!funcs.fileExists(env.PACKAGE_JSON)) {
-                error 'No se encontró el archivo package.json'
-              }
+        script {
+          try {
+            // Chequeo si el archivo package.json existe
+            if (!funcs.fileExists(env.PACKAGE_JSON)) {
+              error 'No se encontró el archivo package.json'
+            }
 
-              // Leer la versión directamente desde package.json usando jq
-              def version = sh(script: "jq -r .version ${env.PACKAGE_JSON}", returnStdout: true).trim()
-              echo "Versión encontrada en el package.json: ${version}"
+            // Leer la versión directamente desde package.json usando jq
+            def version = sh(script: "jq -r .version ${env.PACKAGE_JSON}", returnStdout: true).trim()
+            echo "Versión encontrada en el package.json: ${version}"
 
-              env.VERSION = version
+            env.VERSION = version
 
-              // Docker login
+            // Docker login
+            node { // Inicio del bloque node
               if (funcs.dockerLogin('https://registry.example.com')) {
                 funcs.buildDockerImage("${DOCKER_USER}/AppPIN1", "${version}", '.')
               }
-            } catch (Exception e) {
-              echo "Error en la etapa de Build: ${e.message}"
-              currentBuild.result = 'FAILURE'
-              error 'Hubo un error durante la etapa de Build.'
-            }
+            } // Fin del bloque node
+          } catch (Exception e) {
+            echo "Error en la etapa de Build: ${e.message}"
+            currentBuild.result = 'FAILURE'
+            error 'Hubo un error durante la etapa de Build.'
           }
         }
       }
-    } //fin stage build
+    } // fin stage build
 
   //     stage('Run tests') {
   //       steps {
