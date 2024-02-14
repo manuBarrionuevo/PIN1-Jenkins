@@ -1,4 +1,5 @@
 def funcs
+
 pipeline {
   agent any
 
@@ -12,7 +13,6 @@ pipeline {
   }
 
   stages {
-     stages {
     stage('Load Functions') {
       steps {
         node {
@@ -21,7 +21,8 @@ pipeline {
         }
       }
     }
-        stage('Build') {
+
+    stage('Build') {
       steps {
         script {
           try {
@@ -51,23 +52,23 @@ pipeline {
       }
     } // fin stage build
 
-  //     stage('Run tests') {
-  //       steps {
-  //         sh 'docker run testapp npm test'
-  //       }
-  //     }
-  //     stage('Deploy Image') {
-  //       steps {
-  //         sh '''
-  //         docker tag testapp 127.0.0.1:5000/mguazzardo/testapp
-  //         docker push 127.0.0.1:5000/mguazzardo/testapp
-  //         '''
-  //       }
-  //     }
-  //     stage('Vulnerability Scan - Docker ') {
-  //         steps {
-  //           sh 'docker run  -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy image --severity=critical 127.0.0.1:5000/mguazzardo/testapp'
-  //         }
-  //     }
+    // stage('Run tests') {
+    //   steps {
+    //     sh 'docker run testapp npm test'
+    //   }
+    // }
+    // stage('Deploy Image') {
+    //   steps {
+    //     sh '''
+    //     docker tag testapp 127.0.0.1:5000/mguazzardo/testapp
+    //     docker push 127.0.0.1:5000/mguazzardo/testapp
+    //     '''
+    //   }
+    // }
+    // stage('Vulnerability Scan - Docker ') {
+    //   steps {
+    //     sh 'docker run  -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy image --severity=critical 127.0.0.1:5000/mguazzardo/testapp'
+    //   }
+    // }
   }
 }
