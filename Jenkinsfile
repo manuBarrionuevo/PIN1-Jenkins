@@ -11,7 +11,6 @@ pipeline {
 
   environment {
     VERSION_FILE = 'package.json'
-    DOCKER_USER = credentials('DockerHub').username
   }
 
   stages {
@@ -34,7 +33,7 @@ pipeline {
 
             // Docker login
             if (pinVarsInstance.dockerLogin('https://registry.example.com')) {
-              pinVarsInstance.buildDockerImage("${env.DOCKER_USER}/AppPin1", "${version}", '.')
+              pinVarsInstance.buildDockerImage("${DOCKER_USER}/AppPin1", "${version}", '.')
             }
           } catch (Exception e) {
             echo "Error en la etapa de Build: ${e.message}"
