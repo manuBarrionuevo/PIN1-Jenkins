@@ -17,7 +17,9 @@ pipeline {
       steps {
         node {
           // Agrega un bloque node para proporcionar el contexto necesario
-          funcs = load 'funcs.groovy'
+          script {
+            funcs = load 'funcs.groovy'
+          }
         }
       }
     }
