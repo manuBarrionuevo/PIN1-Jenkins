@@ -21,15 +21,15 @@ pipeline {
           try {
             echo "Buscando el patrón ${VERSION_PATTERN} en ${VERSION_FILE}"
 
-            // Cambios aquí: se agregan comillas dobles alrededor del patrón
-            def versionLine = sh(script: "grep -E \"${VERSION_PATTERN}\" ${VERSION_FILE} | head -n 1", returnStdout: true).trim()
+            
+            def versionLine = sh(script: "grep -E ${VERSION_PATTERN} ${VERSION_FILE} | head -n 1", returnStdout: true).trim()
 
             if (!versionLine) {
               error 'No se encontró la versión en el package.json.'
             }
 
             // Cambios aquí: se agregan comillas dobles alrededor del patrón
-            def version = sh(script: "echo \"${versionLine}\" | grep -oE '\\d+\\.\\d+\\.\\d+'", returnStdout: true).trim()
+            def version = sh(script: "echo ${versionLine} | grep -oE '\\d+\\.\\d+\\.\\d+'", returnStdout: true).trim()
             echo "Versión encontrada en el package.json: ${version}"
 
             env.VERSION = version
