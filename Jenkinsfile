@@ -10,7 +10,6 @@ pipeline {
   }
 
   environment {
-    VERSION_PATTERN = '"version": "\\d+\\.\\d+\\.\\d+"'
     VERSION_FILE = 'package.json'
   }
 
@@ -19,17 +18,15 @@ pipeline {
       steps {
         script {
           try {
-            echo "Buscando el patrón ${VERSION_PATTERN} en ${VERSION_FILE}"
+            echo "Extrayendo la versión de ${VERSION_FILE}"
 
-            
-            def versionLine = sh(script: "grep -E ${VERSION_PATTERN} ${VERSION_FILE} | head -n 1", returnStdout: true).trim()
+            // Cambios aquí: utilizamos jq para extraer la versión
+            def version = sh(script: "jq -r '.version' ${VERSION_FILE}", returnStdout: true).trim()
 
-            if (!versionLine) {
+            if (!version) {
               error 'No se encontró la versión en el package.json.'
             }
 
-            // Cambios aquí: se agregan comillas dobles alrededor del patrón
-            def version = sh(script: "echo ${versionLine} | grep -oE '\\d+\\.\\d+\\.\\d+'", returnStdout: true).trim()
             echo "Versión encontrada en el package.json: ${version}"
 
             env.VERSION = version
