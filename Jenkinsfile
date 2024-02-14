@@ -60,7 +60,7 @@ pipeline {
   }
 }
 
-dockerLogin = { registryUrl ->
+def dockerLogin = { registryUrl ->
   withCredentials([usernamePassword(credentialsId: 'dockerHub', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASSWORD')]) {
     withDockerRegistry([url: registryUrl]) {
       return true
@@ -69,7 +69,7 @@ dockerLogin = { registryUrl ->
   return false
 }
 
-buildDockerImage = { imageName, version, directory ->
+def buildDockerImage = { imageName, version, directory ->
   dir(directory) {
     sh """
                 docker build -t $imageName:$version .
@@ -77,6 +77,4 @@ buildDockerImage = { imageName, version, directory ->
   }
 }
 
-if (!file(PACKAGE_JSON).exists()) {
-    error 'No se encontró el archivo package.json'
-}
+
