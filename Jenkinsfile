@@ -14,17 +14,13 @@ pipeline {
       steps {
         script {
           try {
-            // Chequeo si la versión existe en package.json
-            def versionLine = sh(script: "grep -E \"${VERSION_PATTERN}\" \"${PACKAGE_JSON}\" | head -n 1", returnStdout: true).trim()
-
-            echo "Línea correspondiente al patrón: ${versionLine}"
-
-            if (!versionLine) {
-              error 'No se encontró la versión en el package.json'
+             // Chequeo si el archivo package.json existe
+            if (!fileExists(PACKAGE_JSON)) {
+              error 'No se encontró el archivo package.json'
             }
 
-            // Definir versión
-            def version = sh(script: "echo \"${versionLine}\" | grep -oE \"[0-9]*\\.[0-9]*\\.[0-9]*\"", returnStdout: true).trim()
+            // Leer la versión directamente desde package.json usando jq
+            def version = sh(script: "jq -r .version ${PACKAGE_JSON}", returnStdout: true).trim()
             echo "Versión encontrada en el package.json: ${version}"
 
             env.VERSION = version
