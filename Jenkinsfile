@@ -11,7 +11,7 @@ pipeline {
 
   environment {
     VERSION_FILE = 'package.json'
-    DOCKER_USER = credentials('DockerHub').username
+    DOCKER_USER = sh(script: 'echo $DOCKER_USER', returnStdout: true).trim()
   }
 
   stages {
