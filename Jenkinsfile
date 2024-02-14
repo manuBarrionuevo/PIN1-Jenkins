@@ -15,7 +15,7 @@ pipeline {
   stages {
     stage('Load Functions') {
       steps {
-        node('any') {
+        node('') {
           // Agrega un bloque node para proporcionar el contexto necesario
           script {
             funcs = load 'funcs.groovy'
