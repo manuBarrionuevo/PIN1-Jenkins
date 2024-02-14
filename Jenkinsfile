@@ -1,4 +1,4 @@
-def funcs = load 'funcs.groovy'
+def funcs
 pipeline {
   agent any
 
@@ -12,6 +12,15 @@ pipeline {
   }
 
   stages {
+     stages {
+    stage('Load Functions') {
+      steps {
+        node {
+          // Agrega un bloque node para proporcionar el contexto necesario
+          funcs = load 'funcs.groovy'
+        }
+      }
+    }
         stage('Build') {
       steps {
         script {
