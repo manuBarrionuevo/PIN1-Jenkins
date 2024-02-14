@@ -19,10 +19,8 @@ pipeline {
       steps {
         script {
           try {
-            pinVarsInstance.validateDirectories([CHANGELOG_FILE, 'app/result', 'app/vote', 'app/worker'])
-
-            // Chequeo si la versión existe en changelog
-            def versionLine = sh(script: "grep -E \"${VERSION_PATTERN}\" \"${CHANGELOG_FILE}\" | head -n 1", returnStdout: true).trim()
+             // Chequeo si la versión existe en changelog
+            def versionLine = sh(script: "grep -E \"${VERSION_PATTERN}\" \"${VERSION_FILE}\" | head -n 1", returnStdout: true).trim()
 
             if (!versionLine) {
               error 'No se encontró la versión en el changelog.'
