@@ -1,24 +1,3 @@
-def fileExists(filePath) {
-    return file(filePath).exists()
-  }
-
-def dockerLogin(registryUrl) {
-    withCredentials([usernamePassword(credentialsId: 'dockerHub', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASSWORD')]) {
-        withDockerRegistry([url: registryUrl]) {
-            return true
-        }
-    }
-    return false
-}
-
-def buildDockerImage(imageName, version, directory) {
-    dir(directory) {
-        sh """
-            docker build -t $imageName:$version .
-        """
-    }
-}
-
 pipeline {
   agent any
 
@@ -30,13 +9,13 @@ pipeline {
     VERSION_PATTERN = 'version: "[0-9]*\\.[0-9]*\\.[0-9]*"'
     PACKAGE_JSON = 'package.json'
   }
-
+  
   stages {
         stage('Build') {
       steps {
         script {
           try {
-            // Chequeo si el archivo package.json existe
+             // Chequeo si el archivo package.json existe
             if (!fileExists(PACKAGE_JSON)) {
               error 'No se encontró el archivo package.json'
             }
@@ -79,4 +58,25 @@ pipeline {
   //         }
   //     }
   }
+}
+
+dockerLogin = { registryUrl ->
+  withCredentials([usernamePassword(credentialsId: 'dockerHub', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASSWORD')]) {
+    withDockerRegistry([url: registryUrl]) {
+      return true
+    }
+  }
+  return false
+}
+
+buildDockerImage = { imageName, version, directory ->
+  dir(directory) {
+    sh """
+                docker build -t $imageName:$version .
+            """
+  }
+}
+
+if (!file(PACKAGE_JSON).exists()) {
+    error 'No se encontró el archivo package.json'
 }
