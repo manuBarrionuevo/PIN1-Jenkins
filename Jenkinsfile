@@ -33,7 +33,7 @@ pipeline {
 
             // Docker login
             if (pinVarsInstance.dockerLogin('https://registry.example.com')) {
-              pinVarsInstance.buildDockerImage("${DOCKER_USER}/AppPin1", "${version}", 'Dockerfile')
+              pinVarsInstance.buildDockerImage("${DOCKER_USER}/AppPin1", "${version}", '.')
               sh "docker images"
             }
           } catch (Exception e) {
