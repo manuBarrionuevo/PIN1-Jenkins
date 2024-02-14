@@ -6,7 +6,7 @@ pipeline {
   }
 
   environment {
-    VERSION_PATTERN = 'version: \\[[0-9]*\\.[0-9]*\\.[0-9]*\\]'
+    VERSION_PATTERN = 'version: "[0-9]*\\.[0-9]*\\.[0-9]*"'
     PACKAGE_JSON = 'package.json'
   }
   stages {
