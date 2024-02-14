@@ -12,8 +12,6 @@ pipeline {
 
   environment {
     VERSION_FILE = 'package.json'
-    DOCKER_USER = sh(script: 'echo $DOCKER_USER', returnStdout: true).trim()
-    
   }
 
   stages {
@@ -33,6 +31,9 @@ pipeline {
             echo "Versión encontrada en el package.json: ${version}"
 
             env.VERSION = version
+
+            // Definimos la variable DOCKER_USER aquí
+            def DOCKER_USER = sh(script: 'echo $DOCKER_USER', returnStdout: true).trim()
 
             echo 'Intentando login en Docker Hub'
               // Docker login
