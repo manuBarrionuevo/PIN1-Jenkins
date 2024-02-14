@@ -34,7 +34,7 @@ pipeline {
 
             // Docker login
             if (pinVarsInstance.dockerLogin('https://registry.example.com')) {
-              pinVarsInstance.buildDockerImage("${DOCKER_USER}/AppPin1", "${version}", '.')
+              pinVarsInstance.buildDockerImage("${env.DOCKER_USER}/AppPin1", "${version}", '.')
             }
           } catch (Exception e) {
             echo "Error en la etapa de Build: ${e.message}"
