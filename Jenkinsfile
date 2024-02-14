@@ -1,16 +1,4 @@
-pipeline {
-  agent any
-
-  options {
-    timeout(time: 10, unit: 'MINUTES')
-  }
-
-  environment {
-    VERSION_PATTERN = 'version: "[0-9]*\\.[0-9]*\\.[0-9]*"'
-    PACKAGE_JSON = 'package.json'
-  }
-
-  def fileExists(filePath) {
+def fileExists(filePath) {
     return file(filePath).exists()
   }
 
@@ -30,6 +18,18 @@ def buildDockerImage(imageName, version, directory) {
         """
     }
 }
+
+pipeline {
+  agent any
+
+  options {
+    timeout(time: 10, unit: 'MINUTES')
+  }
+
+  environment {
+    VERSION_PATTERN = 'version: "[0-9]*\\.[0-9]*\\.[0-9]*"'
+    PACKAGE_JSON = 'package.json'
+  }
 
   stages {
         stage('Build') {
