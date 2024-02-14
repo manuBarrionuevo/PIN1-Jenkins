@@ -34,7 +34,7 @@ pipeline {
 
             echo 'Intentando login en Docker Hub'
             // Docker login
-            if (!pinVarsInstance.dockerLogin('https://hub.docker.com/', 'DockerHub')) {
+            if (!pinVarsInstance.dockerLogin('https://registry.example.com', 'dockerHub')) {
               error 'Error en el login de Docker Hub'
             }
             pinVarsInstance.buildDockerImage("${DOCKER_USER}/AppPin1")
