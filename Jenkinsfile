@@ -1,7 +1,7 @@
 @Library('pinVars') _  //se invoca libreria
 
 def pinVarsInstance = pinVars() //se crea instancia para poder utilizar las funciones
-def directory = '.'
+
 
 pipeline {
   agent any
@@ -32,10 +32,14 @@ pipeline {
 
             env.VERSION = version
 
+            
+
             // Docker login
             if(pinVarsInstance.dockerLogin('https://registry.example.com')) {
               pinVarsInstance.buildDockerImage("${DOCKER_USER}/pin-1jenkins", "${version}")
             }
+
+            echo "${DOCKER_USER}/pin-1jenkins, ${version}"
           }catch (Exception e) {
             echo "Error en la etapa de Build: ${e.message}"
             currentBuild.result = 'FAILURE'
