@@ -32,9 +32,6 @@ pipeline {
 
             env.VERSION = version
 
-            // Definimos la variable DOCKER_USER aquí
-            def DOCKER_USER = sh(script: 'echo $DOCKER_USER', returnStdout: true).trim()
-
             echo 'Intentando login en Docker Hub'
               // Docker login
               if (!pinVarsInstance.dockerLogin('https://registry.example.com')) {
