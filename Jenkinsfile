@@ -31,9 +31,10 @@ pipeline {
 
             env.VERSION = version
 
-                       
-              pinVarsInstance.buildDockerImage()
-            
+            // Docker login
+            if (pinVarsInstance.dockerLogin('https://registry.example.com')) {
+              pinVarsInstance.buildDockerImage("${DOCKER_USER}/pin-1jenkins", "${version}")
+            }
 
           }catch (Exception e) {
             echo "Error en la etapa de Build: ${e.message}"
@@ -42,6 +43,7 @@ pipeline {
           }
         }
       }
+    }
 
     // stage('Run tests') {
     //   steps {
@@ -49,14 +51,23 @@ pipeline {
     //   }
     // }
 
-    // stage('Deploy Image') {
-    //   steps {
-    //     sh '''
-    //       docker tag testapp 127.0.0.1:5000/mguazzardo/testapp
-    //       docker push 127.0.0.1:5000/mguazzardo/testapp
-    //     '''
-    //   }
-    // }
-    }
+    stage('Deploy') {
+      steps {
+        script {
+          try {
+            // Docker login
+            if (pinVarsInstance.dockerLogin('https://registry.example.com')) {             
+
+              pinVarsInstance.pushDockerImage("${DOCKER_USER}/pin-1jenkins", "${version}")
+              
+            }
+                    } catch (Exception e) {
+            echo "Error en la etapa de Deploy: ${e.message}"
+            currentBuild.result = 'FAILURE'
+            error 'Hubo un error durante la etapa de Deploy.'
+          }
+        }
+      }
+        } // fin stage deploy
   }
 }
