@@ -32,8 +32,7 @@ pipeline {
             env.VERSION = version
 
             // Docker login
-            // Docker login
-            if (pinVarsInstance.dockerLogin('https://index.docker.io/v1/')) {
+            if (pinVarsInstance.dockerLogin('https://registry.example.com')) {
               pinVarsInstance.buildDockerImage("${DOCKER_USER}/pinapp", "${version}", '.')
             }
           }catch (Exception e) {
@@ -55,11 +54,9 @@ pipeline {
       steps {
         script {
           try {
-            // Docker login
-            // Docker login
-            def loggedIn = pinVarsInstance.dockerLogin('https://registry.example.com')
+            // Docker logindef loggedIn = pinVarsInstance.dockerLogin('https://registry.example.com')
 
-                echo "¿Se ha iniciado sesión en Docker Hub? ${loggedIn}"
+                
             if (pinVarsInstance.dockerLogin('https://registry.example.com')) {
               pinVarsInstance.pushDockerImage("${DOCKER_USER}/pinapp", "${env.VERSION}", '.')
             }
