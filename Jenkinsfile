@@ -57,6 +57,8 @@ pipeline {
           try {
             // Docker login
             // Docker login
+            def loggedIn = pinVars.dockerLogin('https://registry.example.com')
+                echo "¿Se ha iniciado sesión en Docker Hub? ${loggedIn}"
             if (pinVarsInstance.dockerLogin('https://registry.example.com')) {
               pinVarsInstance.pushDockerImage("${DOCKER_USER}/pinapp", "${env.VERSION}", '.')
             }
