@@ -37,15 +37,13 @@ pipeline {
               if (!pinVarsInstance.dockerLogin('https://registry.example.com')) {
                 pinVarsInstance.buildDockerImage("${DOCKER_USER}/AppPin", "${version}", "${directory}")
               }
-                            
-                    } catch (Exception e) {
+          }catch (Exception e) {
             echo "Error en la etapa de Build: ${e.message}"
             currentBuild.result = 'FAILURE'
             error 'Hubo un error durante la etapa de Build.'
           }
         }
       }
-    }
 
     // stage('Run tests') {
     //   steps {
@@ -53,13 +51,14 @@ pipeline {
     //   }
     // }
 
-  // stage('Deploy Image') {
-  //   steps {
-  //     sh '''
-  //       docker tag testapp 127.0.0.1:5000/mguazzardo/testapp
-  //       docker push 127.0.0.1:5000/mguazzardo/testapp
-  //     '''
-  //   }
-  // }
+    // stage('Deploy Image') {
+    //   steps {
+    //     sh '''
+    //       docker tag testapp 127.0.0.1:5000/mguazzardo/testapp
+    //       docker push 127.0.0.1:5000/mguazzardo/testapp
+    //     '''
+    //   }
+    // }
+    }
   }
 }
