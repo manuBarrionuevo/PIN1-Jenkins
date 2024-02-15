@@ -33,7 +33,7 @@ pipeline {
             env.VERSION = version
 
             // Docker login
-            if(pinVarsInstance.dockerLogin('https://hub.docker.com/repositories/mbarrionuevok8s')) {
+            if(pinVarsInstance.dockerLogin('https://registry.example.com')) {
               pinVarsInstance.buildDockerImage("${DOCKER_USER}/pin-1jenkins", "${version}")
             }
           }catch (Exception e) {
