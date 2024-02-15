@@ -33,7 +33,7 @@ pipeline {
 
             // Docker login
             // Docker login
-            if (pinVarsInstance.dockerLogin('https://registry.hub.docker.com/')) {
+            if (pinVarsInstance.dockerLogin('https://index.docker.io/v1/')) {
               pinVarsInstance.buildDockerImage("${DOCKER_USER}/pinapp", "${version}", '.')
             }
           }catch (Exception e) {
