@@ -57,8 +57,8 @@ pipeline {
           try {
             // Docker login
             // Docker login
-            if (dockerBuildDeployInstance.dockerLogin('https://registry.example.com')) {
-              dockerBuildDeployInstance.pushDockerImage("${DOCKER_USER}/pinapp", "${env.VERSION}", '.')
+            if (pinVarsInstance.dockerLogin('https://registry.example.com')) {
+              pinVarsInstance.pushDockerImage("${DOCKER_USER}/pinapp", "${env.VERSION}", '.')
             }
                     } catch (Exception e) {
             echo "Error en la etapa de Deploy: ${e.message}"
