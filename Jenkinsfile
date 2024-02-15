@@ -39,7 +39,7 @@ pipeline {
               pinVarsInstance.buildDockerImage("${DOCKER_USER}/pin-1jenkins", "${version}")
             }
 
-            echo "${DOCKER_USER}/pin-1jenkins, ${version}"
+            
           }catch (Exception e) {
             echo "Error en la etapa de Build: ${e.message}"
             currentBuild.result = 'FAILURE'
