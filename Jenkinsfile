@@ -31,10 +31,12 @@ pipeline {
 
             env.VERSION = version
 
-            // Docker build
-            if (pinVarsInstance.dockerLogin()) {
-              pinVarsInstance.buildDockerImage("${DOCKER_USER}/pin-1jenkins", "${version}")
-            }
+            // Docker login
+           pinVarsInstance.dockerLogin()
+
+           // Docker build
+           pinVarsInstance.buildDockerImage("${DOCKER_USER}/pin-1jenkins", "${version}")
+            
 
           }catch (Exception e) {
             echo "Error en la etapa de Build: ${e.message}"
