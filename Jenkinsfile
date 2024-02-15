@@ -31,8 +31,8 @@ pipeline {
 
             env.VERSION = version
 
-            // Docker login
-            if (pinVarsInstance.dockerLogin('https://registry.example.com')) {
+            // Docker build
+            if (pinVarsInstance.dockerLogin()) {
               pinVarsInstance.buildDockerImage("${DOCKER_USER}/pin-1jenkins", "${version}")
             }
 
@@ -56,10 +56,8 @@ pipeline {
         script {
           try {
             // Docker login
-            if (pinVarsInstance.dockerLogin('https://registry.example.com')) {             
-
+            if (pinVarsInstance.dockerLogin('https://registry.example.com')) {
               pinVarsInstance.pushDockerImage("${DOCKER_USER}/pin-1jenkins", "${version}")
-              
             }
                     } catch (Exception e) {
             echo "Error en la etapa de Deploy: ${e.message}"
